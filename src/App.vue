@@ -1,50 +1,31 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="blue lighten-2"
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          :src="require('./assets/logo.svg')"
-          transition="scale-transition"
-          width="200"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Metamask</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
+    <Navbar/>
     <v-main>
-      <HelloWorld/>
+      <v-container class="mx-auto" max-width="800">
+        <v-row dense>
+          <v-col
+            v-for="( event, i ) in $store.getters.allEvents"
+            :key="i"
+            :cols="i === 0 ? 12 : 6"
+          >
+            <Event :event="event" :is-first="i === 0"/>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-main>
+    <Connect/>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import Connect from '@/components/Connect'
+import Event from '@/components/Event'
+import Navbar from '@/components/Navbar'
 
 export default {
-  name: 'App',
-
   components: {
-    HelloWorld
-  },
-
-  data: () => ({
-    //
-  })
+    Connect, Event, Navbar
+  }
 }
 </script>
