@@ -17,7 +17,6 @@ User buy tickets:
 - metamask modal will popup and prompt a user to confirm the transaction and pay the required gas fees and ticket value
 - user can check tickets amount on the event card
 
-
 ## Setup
 ```
 npm install
