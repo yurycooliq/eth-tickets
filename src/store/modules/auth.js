@@ -1,12 +1,13 @@
 import Web3 from 'web3'
 import { abi } from './../../abis/TicketFactory.json'
-const web3 = new Web3(window.ethereum)
+
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000'
-const FACTORY = '0x734631387eac259b640bee280045849ad1cf0f0e'
+const FACTORY = '0xdab2F7975415401340df6F6eDE457BD9122a6BD4'
+const web3 = new Web3(window.ethereum)
 
 const state = {
   authenticated: false,
-  owner: false,
+  owner: null,
   address: DEFAULT_ADDRESS
 }
 
