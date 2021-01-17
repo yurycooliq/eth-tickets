@@ -53,7 +53,6 @@
 <script>
 import moment from 'moment'
 import { mapGetters } from 'vuex'
-import { abi } from './../abis/TicketOffice.json'
 
 export default {
   props: {
@@ -82,7 +81,7 @@ export default {
       address: 'auth/address'
     }),
     loading: function () {
-      return Object.values(this.loaded).find(state => state === false)
+      return Object.values(this.loaded).indexOf(false) > -1
     },
     ticketOffice: function () {
       return this.event[0]
@@ -123,9 +122,7 @@ export default {
       return `You have ${this.myTickets} ticket${suffix}`
     },
     buyTicketLabel: function () {
-      return this.loading
-        ? 'Loading price...'
-        : `Buy ticket for ${this.ticketCostInEther}Ξ`
+      return `Buy ticket for ${this.ticketCostInEther}Ξ`
     },
     ticketsLeft: function () {
       return this.loading
@@ -135,22 +132,27 @@ export default {
   },
 
   created () {
-    this.init()
+    /*
+     * TODO: There is strange bug - any web3 request returns 0
+     * when fired less then 1 sec after component created.
+     */
+    setTimeout(async () => {
+      await this.init()
+    }, 1000)
   },
 
   methods: {
-    getMyTickets: async function (ticketOffice) {
-      this.myTickets = await ticketOffice.methods.balanceOf(this.address).call()
+    getMyTickets: async function () {
+      this.myTickets = await this.$store.dispatch('getMyTickets', this.ticketOffice)
       this.loaded.balance = true
     },
-    getTotalSupply: async function (ticketOffice) {
-      this.ticketsSold = await ticketOffice.methods.totalSupply().call()
+    getTotalSupply: async function () {
+      this.ticketsSold = await this.$store.dispatch('getTotalSupply', this.ticketOffice)
       this.loaded.totalSupply = true
     },
     init: async function () {
-      const ticketOffice = new this.$web3.eth.Contract(abi, this.ticketOffice)
-      await this.getMyTickets(ticketOffice)
-      await this.getTotalSupply(ticketOffice)
+      await this.getMyTickets()
+      await this.getTotalSupply()
     },
     buyTicket: async function () {
       await this.$store.dispatch('buyTicket', {

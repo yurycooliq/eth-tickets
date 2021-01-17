@@ -47,6 +47,19 @@ export default new Vuex.Store({
       ticketFactoryContract.methods.addEvent(...payload).send({
         from: getters['auth/address']
       })
+    },
+    getTotalSupply: async (context, address) => {
+      const ticketOfficeContract = new web3.eth.Contract(
+        ticketOffice.abi, address
+      )
+      return await ticketOfficeContract.methods.totalSupply().call()
+    },
+    getMyTickets: async ({ getters }, address) => {
+      const ticketOfficeContract = new web3.eth.Contract(
+        ticketOffice.abi, address
+      )
+      console.log('ta', getters['auth/address'])
+      return await ticketOfficeContract.methods.balanceOf(getters['auth/address']).call()
     }
   },
   modules: {
