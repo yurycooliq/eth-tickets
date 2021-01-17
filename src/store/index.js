@@ -58,7 +58,6 @@ export default new Vuex.Store({
       const ticketOfficeContract = new web3.eth.Contract(
         ticketOffice.abi, address
       )
-      console.log('ta', getters['auth/address'])
       return await ticketOfficeContract.methods.balanceOf(getters['auth/address']).call()
     }
   },
