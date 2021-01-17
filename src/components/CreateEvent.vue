@@ -147,14 +147,14 @@ export default {
     description: '',
     imageUrl: '',
     date: moment().unix(),
-    duration: 3600,
-    ticketCost: 1e17,
+    duration: 3600, // 1 hour
+    ticketCost: 1e17, // 0.1 ether
     maxTickets: 1000,
     dialog: false,
     showDatePicker: false,
     showTimePicker: false,
     symbol: defaultSymbol,
-    timeRule: [v => v.match(timeRegExp) || 'Invalid time!'],
+    timeRule: [v => v.match(timeRegExp) != null || 'Invalid time!'],
     maxTicketsRule: [v => v > 0 || 'Invalid amount!']
   }),
 
