@@ -8,22 +8,36 @@ const ticketFactory = require('./../abis/TicketFactory.json')
 const ticketOffice = require('./../abis/TicketOffice.json')
 const ticketFactoryContract = new web3.eth.Contract(
   ticketFactory.abi,
-  '0x734631387eac259b640bee280045849ad1cf0f0e'
+  '0xdab2F7975415401340df6F6eDE457BD9122a6BD4'
 )
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    eventList: []
+    eventList: [],
+    transaction: false,
+    transactionText: '',
+    transactionUrl: ''
   },
   getters: {
     allEvents: state => state.eventList,
-    isMetamaskExists: state => state.isMetamaskExists
+    transaction: state => state.transaction,
+    transactionText: state => state.transactionText,
+    transactionUrl: state => state.transactionUrl
   },
   mutations: {
     setEvents: (state, payload) => {
       state.eventList.unshift(payload)
+    },
+    setTransaction: (state, payload) => {
+      state.transaction = payload
+    },
+    setTransactionText: (state, payload) => {
+      state.transactionText = payload
+    },
+    setTransactionUrl: (state, payload) => {
+      state.transactionUrl = payload
     }
   },
   actions: {
@@ -33,15 +47,21 @@ export default new Vuex.Store({
         commit('setEvents', await ticketFactoryContract.methods.eventsList(i).call())
       }
     },
-    buyTicket: async ({ getters }, payload) => {
+    buyTicket: async ({ getters, commit }, payload) => {
       const ticketOfficeContract = new web3.eth.Contract(
         ticketOffice.abi,
         payload.address
       )
-      await ticketOfficeContract.methods.mint().send({
-        from: getters['auth/address'],
-        value: payload.value
-      })
+      ticketOfficeContract.methods.mint()
+        .send({
+          from: getters['auth/address'],
+          value: payload.value
+        })
+        .on('transactionHash', function (hash) {
+          commit('setTransactionText', 'Watch your transaction on Etherscan.io')
+          commit('setTransactionUrl', 'https://ropsten.etherscan.io/tx/' + hash)
+          commit('setTransaction', true)
+        })
     },
     createEvent: async ({ dispatch, getters }, payload) => {
       ticketFactoryContract.methods.addEvent(...payload).send({
