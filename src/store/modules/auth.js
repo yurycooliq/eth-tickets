@@ -41,9 +41,9 @@ const actions = {
     commit('setOwner', isOwner)
     dispatch('getEvents', null, { root: true })
   },
-  connect: ({ commit, dispatch }) => {
+  connect: async ({ commit, dispatch }) => {
     if (Object.prototype.hasOwnProperty.call(window, 'ethereum')) {
-      window.ethereum.enable()
+      await window.ethereum.enable()
       commit('setAuthenticated', true)
       dispatch('setAddress')
     }
